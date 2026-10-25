@@ -1181,6 +1181,7 @@
 
     // --- EVENT LISTENERS & SETUP ---
     function resetAllFilters() {
+      // 1. Reset JavaScript Filter Logic States
       filterState.search = '';
       filterState.levels.clear();
       filterState.schools.clear();
@@ -1191,15 +1192,34 @@
       filterState.stockedOnly = false;
       filterState.sort = 'alpha';
 
-      document.getElementById('filter-search').value = '';
-      document.getElementById('filter-casting-type').value = '';
-      document.getElementById('filter-concentration').checked = false;
-      document.getElementById('filter-ritual').checked = false;
-      document.getElementById('sort-order').value = 'alpha';
+      // 2. Reset Text Search Input
+      const searchInput = document.getElementById('filter-search');
+      if (searchInput) searchInput.value = '';
 
+      const clearBtn = document.getElementById('btn-clear-search');
+      if (clearBtn) clearBtn.classList.add('hidden');
+
+      // 3. Reset Dropdown UI Elements (including Casting Time & Sort Order)
+      const castingSelect = document.getElementById('filter-casting-type');
+      if (castingSelect) castingSelect.value = '';
+
+      const sortSelect = document.getElementById('sort-order');
+      if (sortSelect) sortSelect.value = 'alpha';
+
+      // 4. Reset Checkboxes
+      const concCheck = document.getElementById('filter-concentration');
+      if (concCheck) concCheck.checked = false;
+
+      const ritualCheck = document.getElementById('filter-ritual');
+      if (ritualCheck) ritualCheck.checked = false;
+
+      // 5. Reset Stocked Filter Toggle Button Styling
       const btnStocked = document.getElementById('btn-toggle-stocked');
-      btnStocked.className = "px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-400 border border-slate-700 flex items-center gap-1.5 transition";
+      if (btnStocked) {
+        btnStocked.className = "px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-400 border border-slate-700 flex items-center gap-1.5 transition";
+      }
 
+      // 6. Re-render Filter Pills & Spell List
       buildFilterControls();
       renderSpellList();
     }
