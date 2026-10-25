@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950 text-slate-100 dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neon Odyssey // Spell Compendium</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Custom Cyberpunk Styling -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            cyber: {
+              bg: '#07090e',
+              panel: '#0e131f',
+              border: '#1e293b',
+              glow: '#00f3ff',
+              cyan: '#00f3ff',
+              magenta: '#ff0055',
+              yellow: '#ffe600',
+              green: '#00ff66',
+              purple: '#ad00ff'
+            }
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'Consolas', 'Courier New', 'monospace'],
+            sans: ['Inter', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #07090e;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 243, 255, 0.05) 0%, transparent 70%),
+        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 30px 30px, 30px 30px;
+    }
+    
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Cyberpunk Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #090d16;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #00f3ff;
+      box-shadow: 0 0 10px #00f3ff;
+    }
+
+    /* Glowing borders and clips */
+    .cyber-border {
+      position: relative;
+      border: 1px solid rgba(0, 243, 255, 0.2);
+    }
+    .cyber-border::after {
+      content: '';
+      position: absolute;
+      top: -1px; left: -1px;
+      width: 6px; height: 6px;
+      border-top: 2px solid #00f3ff;
+      border-left: 2px solid #00f3ff;
+    }
+    .cyber-border::before {
+      content: '';
+      position: absolute;
+      bottom: -1px; right: -1px;
+      width: 6px; height: 6px;
+      border-bottom: 2px solid #ff0055;
+      border-right: 2px solid #ff0055;
+    }
+
+    .glow-cyan {
+      box-shadow: 0 0 12px rgba(0, 243, 255, 0.25);
+    }
+    .glow-magenta {
+      box-shadow: 0 0 12px rgba(255, 0, 85, 0.25);
+    }
+    
+    .scanline {
+      background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0.3));
+      background-size: 100% 4px;
+    }
+  </style>
+</head>
+<body class="h-full flex flex-col text-slate-200 overflow-hidden select-none">
+
+  <!-- ==================== TOP HEADER ==================== -->
+  <header class="h-16 bg-slate-900/90 border-b border-slate-800 px-3 md:px-4 flex items-center justify-between shrink-0 backdrop-blur z-20">
+    <div class="flex items-center gap-2.5 md:gap-3">
+      <!-- Mobile Drawer Toggle Hamburger Button -->
+      <button id="btn-toggle-mobile-sidebar" class="lg:hidden p-2 rounded bg-slate-800 hover:bg-slate-700 text-cyber-cyan border border-cyber-cyan/30 flex items-center gap-1.5 font-mono text-xs transition">
+        <i data-lucide="menu" class="w-5 h-5"></i>
+        <span class="hidden sm:inline">SPELLS</span>
+      </button>
+
+      <div class="p-2 bg-slate-800 border border-cyber-cyan/40 rounded text-cyber-cyan shadow-[0_0_10px_rgba(0,243,255,0.2)]">
+        <i data-lucide="zap" class="w-5 h-5"></i>
+      </div>
+      <div>
+        <h1 class="font-mono font-bold text-base md:text-lg tracking-wider text-slate-100 flex items-center gap-2">
+          <span class="text-cyber-cyan">NEON</span> ODYSSEY
+          <span class="text-[10px] md:text-xs font-normal px-1.5 md:px-2 py-0.5 rounded bg-cyber-cyan/10 text-cyber-cyan border border-cyber-cyan/30" id="header-version">v1.0</span>
+        </h1>
+        <p class="text-[10px] md:text-xs text-slate-400 font-mono truncate max-w-[150px] sm:max-w-none" id="header-subtitle">COMPENDIUM DATABASE // DISCONNECTED</p>
+      </div>
+    </div>
+
+    <!-- Header Actions & Controls -->
+    <div class="flex items-center gap-1.5 md:gap-3">
+      <!-- Rules Button -->
+      <button id="btn-open-rules" class="hidden text-xs font-mono px-2.5 md:px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 flex items-center gap-1.5 transition">
+        <i data-lucide="book-open" class="w-4 h-4 text-cyber-cyan"></i>
+        <span class="hidden sm:inline">PROTOCOL RULES</span>
+      </button>
+
+      <!-- Load Demo Data Button -->
+      <button id="btn-load-demo" class="text-xs font-mono px-2.5 md:px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 flex items-center gap-1.5 transition">
+        <i data-lucide="database" class="w-4 h-4 text-cyber-yellow"></i>
+        <span class="hidden md:inline">LOAD SAMPLE DATA</span>
+      </button>
+
+      <!-- File Upload Label Button -->
+      <label for="json-file-input" class="cursor-pointer text-xs font-mono px-2.5 md:px-3 py-1.5 rounded bg-cyber-cyan/10 hover:bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/40 flex items-center gap-1.5 transition shadow-[0_0_10px_rgba(0,243,255,0.15)]">
+        <i data-lucide="upload" class="w-4 h-4"></i>
+        <span class="hidden sm:inline">SELECT JSON FILE</span>
+        <input type="file" id="json-file-input" accept=".json" class="hidden" />
+      </label>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CONTENT LAYOUT ==================== -->
+  <div class="flex-1 flex overflow-hidden relative">
+
+    <!-- DROPZONE OVERLAY FOR FILE UPLOAD -->
+    <div id="drop-zone" class="hidden absolute inset-0 bg-slate-950/90 backdrop-blur z-50 border-2 border-dashed border-cyber-cyan flex flex-col items-center justify-center p-6 transition-all">
+      <i data-lucide="file-json" class="w-16 h-16 text-cyber-cyan mb-4 animate-bounce"></i>
+      <h2 class="text-2xl font-mono font-bold text-slate-100 mb-2">DROP JSON SPECIFICATION HERE</h2>
+      <p class="text-sm font-mono text-slate-400 mb-4">Accepts <span class="text-cyber-cyan">neon_odyssey_spells.json</span> data package</p>
+      <p class="text-xs text-slate-500">Release to initialize matrix database</p>
+    </div>
+
+    <!-- MOBILE SIDEBAR BACKDROP OVERLAY -->
+    <div id="sidebar-backdrop" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-30 lg:hidden transition-opacity"></div>
+
+    <!-- ==================== LEFT PANEL: SPELL SELECTOR & FILTERS ==================== -->
+    <aside id="sidebar-panel" class="fixed inset-y-0 left-0 z-40 w-full sm:w-80 md:w-96 lg:w-[380px] xl:w-[420px] lg:static bg-slate-900 border-r border-slate-800 flex flex-col shrink-0 overflow-hidden transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
+      
+      <!-- Top Filters Header / Search -->
+      <div class="p-3 border-b border-slate-800 bg-slate-950/60 space-y-2.5">
+        
+        <!-- Mobile Sidebar Close Row -->
+        <div class="flex items-center justify-between lg:hidden pb-1 border-b border-slate-800/60">
+          <span class="font-mono text-xs font-bold text-cyber-cyan flex items-center gap-1.5">
+            <i data-lucide="sliders" class="w-3.5 h-3.5"></i> SPELL INDEX & FILTERS
+          </span>
+          <button id="btn-close-mobile-sidebar" class="text-slate-400 hover:text-white p-1 rounded bg-slate-800 border border-slate-700">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- Search Input -->
+        <div class="relative">
+          <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-500"></i>
+          <input type="text" id="filter-search" placeholder="Search spells, text, keywords..." 
+            class="w-full bg-slate-950 text-slate-100 text-sm font-mono pl-9 pr-8 py-2 rounded border border-slate-800 focus:border-cyber-cyan focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition placeholder-slate-600">
+          <button id="btn-clear-search" class="hidden absolute right-2.5 top-2.5 text-slate-500 hover:text-slate-300">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- Filter Toggle & Quick Stats Row -->
+        <div class="flex items-center justify-between text-xs font-mono">
+          <div class="flex items-center gap-2">
+            <button id="btn-toggle-filters" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 flex items-center gap-1.5 transition">
+              <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5 text-cyber-cyan"></i>
+              <span>FILTERS</span>
+              <span id="filter-active-count" class="hidden px-1.5 py-0.2 bg-cyber-cyan text-slate-950 rounded-full font-bold text-[10px]">0</span>
+            </button>
+
+            <!-- Stocked Spells Deck Filter Toggle -->
+            <button id="btn-toggle-stocked" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-400 border border-slate-700 flex items-center gap-1.5 transition">
+              <i data-lucide="bookmark" class="w-3.5 h-3.5 text-cyber-yellow"></i>
+              <span>STOCKED</span>
+              <span id="stocked-count-pill" class="text-cyber-yellow font-bold">0</span>
+            </button>
+          </div>
+
+          <div class="text-slate-500 text-[11px]" id="spell-count-summary">
+            0 / 0 SPELLS
+          </div>
+        </div>
+
+        <!-- Collapsible Extended Filter Panel -->
+        <div id="filter-drawer" class="hidden space-y-3 pt-2 border-t border-slate-800 text-xs font-mono">
+          
+          <!-- Level Pills -->
+          <div>
+            <div class="text-slate-400 mb-1.5 flex justify-between">
+              <span>SPELL LEVEL</span>
+              <button id="btn-reset-levels" class="text-cyber-cyan text-[10px] hover:underline">CLEAR</button>
+            </div>
+            <div class="flex flex-wrap gap-1" id="filter-level-pills">
+              <!-- Level pills 0-8 generated via JS -->
+            </div>
+          </div>
+
+          <!-- Class Selector -->
+          <div>
+            <div class="text-slate-400 mb-1 flex justify-between">
+              <span>CLASS</span>
+              <button id="btn-reset-classes" class="text-cyber-cyan text-[10px] hover:underline">CLEAR</button>
+            </div>
+            <div class="flex flex-wrap gap-1 max-h-24 overflow-y-auto pr-1" id="filter-class-pills">
+              <!-- Class pills generated dynamically -->
+            </div>
+          </div>
+
+          <!-- School Selector -->
+          <div>
+            <div class="text-slate-400 mb-1 flex justify-between">
+              <span>MAGIC SCHOOL</span>
+              <button id="btn-reset-schools" class="text-cyber-cyan text-[10px] hover:underline">CLEAR</button>
+            </div>
+            <div class="flex flex-wrap gap-1 max-h-24 overflow-y-auto pr-1" id="filter-school-pills">
+              <!-- School pills generated dynamically -->
+            </div>
+          </div>
+
+          <!-- Casting Time & Toggles Row -->
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-slate-400 block mb-1">CASTING TIME</label>
+              <select id="filter-casting-type" class="w-full bg-slate-950 border border-slate-800 text-slate-300 rounded p-1.5 text-xs focus:border-cyber-cyan outline-none">
+                <option value="">ALL CASTING TIMES</option>
+                <option value="Action">Action</option>
+                <option value="Bonus Action">Bonus Action</option>
+                <option value="Reaction">Reaction</option>
+                <option value="1 hour">1 hour</option>
+                <option value="8 hours">8 hours</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="text-slate-400 block mb-1">SORT ORDER</label>
+              <select id="sort-order" class="w-full bg-slate-950 border border-slate-800 text-slate-300 rounded p-1.5 text-xs focus:border-cyber-cyan outline-none">
+                <option value="alpha">A - Z (Alphabetical)</option>
+                <option value="level-asc">Level (Low to High)</option>
+                <option value="level-desc">Level (High to Low)</option>
+                <option value="school">School</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Component Toggles -->
+          <div class="flex items-center justify-between pt-1 text-slate-300">
+            <label class="flex items-center gap-1.5 cursor-pointer">
+              <input type="checkbox" id="filter-concentration" class="rounded bg-slate-900 border-slate-700 text-cyber-cyan focus:ring-0">
+              <span>Concentration</span>
+            </label>
+            <label class="flex items-center gap-1.5 cursor-pointer">
+              <input type="checkbox" id="filter-ritual" class="rounded bg-slate-900 border-slate-700 text-cyber-cyan focus:ring-0">
+              <span>Ritual</span>
+            </label>
+            <button id="btn-reset-all-filters" class="text-cyber-magenta hover:underline text-[11px]">
+              RESET ALL
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Spell Selector List -->
+      <div id="spell-list-container" class="flex-1 overflow-y-auto divide-y divide-slate-800/60 p-2 space-y-1">
+        <!-- Spells rendered here -->
+        <div class="p-8 text-center text-slate-500 font-mono text-sm">
+          <i data-lucide="cpu" class="w-8 h-8 mx-auto mb-2 text-slate-600 animate-pulse"></i>
+          <p>NO SPELL DATA LOADED</p>
+          <p class="text-xs text-slate-600 mt-1">Upload neon_odyssey_spells.json or click "LOAD SAMPLE DATA"</p>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- ==================== MAIN PANEL: SPELL DETAILED VIEW ==================== -->
+    <main class="flex-1 bg-slate-950 flex flex-col overflow-y-auto relative p-4 md:p-8" id="detail-main-container">
+      
+      <!-- Mobile Quick Menu Trigger Button on top of details -->
+      <div class="lg:hidden mb-4">
+        <button id="btn-mobile-open-selector" class="w-full py-2 px-3 rounded bg-slate-900 border border-slate-800 hover:border-cyber-cyan/50 text-slate-300 font-mono text-xs flex items-center justify-between transition">
+          <span class="flex items-center gap-2">
+            <i data-lucide="menu" class="w-4 h-4 text-cyber-cyan"></i>
+            <span>SELECT SPELL / FILTERS</span>
+          </span>
+          <span class="text-cyber-cyan font-bold" id="mobile-selected-spell-name">Accelerate Fall</span>
+        </button>
+      </div>
+
+      <!-- Empty State View -->
+      <div id="empty-detail-view" class="flex-1 flex flex-col items-center justify-center text-center p-6 border border-dashed border-slate-800/80 rounded-xl bg-slate-900/20">
+        <div class="relative mb-6">
+          <div class="w-20 h-20 rounded-full border border-cyber-cyan/20 flex items-center justify-center animate-spin" style="animation-duration: 15s;">
+            <div class="w-12 h-12 rounded-full border border-cyber-magenta/30"></div>
+          </div>
+          <i data-lucide="crosshair" class="w-8 h-8 text-cyber-cyan absolute inset-0 m-auto"></i>
+        </div>
+        <h3 class="font-mono text-lg text-slate-200 font-bold tracking-wider mb-2">SPELL COMPENDIUM MATRIX</h3>
+        <p class="text-slate-400 text-sm max-w-md font-sans mb-6">
+          Select a spell record from the left column index to read spell matrix specifications, casting components, higher-level upgrades, and creature stat blocks.
+        </p>
+        <div class="text-xs font-mono text-slate-600 flex items-center gap-4 border-t border-slate-800 pt-4">
+          <span>[↑/↓] NAVIGATE</span>
+          <span>[ESC] CLEAR SEARCH</span>
+          <span>[JSON] CUSTOM DB</span>
+        </div>
+      </div>
+
+      <!-- Loaded Detail View Container -->
+      <div id="spell-detail-content" class="hidden max-w-4xl mx-auto w-full space-y-6">
+        
+        <!-- Header Section -->
+        <div class="cyber-border bg-slate-900/80 p-6 rounded-lg space-y-3 relative overflow-hidden backdrop-blur">
+          <div class="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span id="detail-level-badge" class="font-mono text-xs px-2 py-0.5 rounded font-semibold bg-cyber-cyan/10 text-cyber-cyan border border-cyber-cyan/30">
+                  Level 1
+                </span>
+                <span id="detail-school" class="font-mono text-xs text-slate-400 uppercase tracking-wider">
+                  Transmutation
+                </span>
+              </div>
+              <h2 id="detail-name" class="text-2xl md:text-3xl font-bold font-mono tracking-tight text-white flex items-center gap-3">
+                Accelerate Fall
+              </h2>
+            </div>
+
+            <!-- Action Controls -->
+            <div class="flex items-center gap-2">
+              <button id="detail-btn-stock" class="px-3 py-1.5 rounded font-mono text-xs border flex items-center gap-1.5 transition">
+                <i data-lucide="bookmark" class="w-4 h-4"></i>
+                <span id="detail-stock-text">STOCK SPELL</span>
+              </button>
+              <button id="detail-btn-copy" title="Copy Permalink" class="p-2 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">
+                <i data-lucide="link" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Classes Subtitle Tag Line -->
+          <div class="flex items-center gap-2 font-mono text-xs text-slate-400 pt-1 border-t border-slate-800/80">
+            <i data-lucide="users" class="w-3.5 h-3.5 text-cyber-cyan"></i>
+            <span>CLASSES:</span>
+            <div id="detail-classes" class="flex flex-wrap gap-1.5 text-slate-200">
+              <!-- Class Badges -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Key Metrics Panel (Grid) -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 font-mono text-xs">
+          
+          <!-- Casting Time -->
+          <div class="bg-slate-900/60 p-3 rounded border border-slate-800/80 space-y-1">
+            <span class="text-slate-500 text-[10px] uppercase tracking-wider block flex items-center gap-1">
+              <i data-lucide="clock" class="w-3 h-3 text-cyber-cyan"></i> CASTING TIME
+            </span>
+            <p id="detail-casting-time" class="text-slate-200 font-medium leading-snug">Reaction</p>
+          </div>
+
+          <!-- Range -->
+          <div class="bg-slate-900/60 p-3 rounded border border-slate-800/80 space-y-1">
+            <span class="text-slate-500 text-[10px] uppercase tracking-wider block flex items-center gap-1">
+              <i data-lucide="crosshair" class="w-3 h-3 text-cyber-magenta"></i> RANGE
+            </span>
+            <p id="detail-range" class="text-slate-200 font-medium">60 feet</p>
+          </div>
+
+          <!-- Components -->
+          <div class="bg-slate-900/60 p-3 rounded border border-slate-800/80 space-y-1">
+            <span class="text-slate-500 text-[10px] uppercase tracking-wider block flex items-center gap-1">
+              <i data-lucide="cpu" class="w-3 h-3 text-cyber-yellow"></i> COMPONENTS
+            </span>
+            <p id="detail-components" class="text-slate-200 font-medium break-words">V, S, M</p>
+          </div>
+
+          <!-- Duration -->
+          <div class="bg-slate-900/60 p-3 rounded border border-slate-800/80 space-y-1">
+            <span class="text-slate-500 text-[10px] uppercase tracking-wider block flex items-center gap-1">
+              <i data-lucide="hourglass" class="w-3 h-3 text-cyber-green"></i> DURATION
+            </span>
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span id="detail-duration" class="text-slate-200 font-medium">1 minute</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Casting Trigger Banner (If reaction/bonus action has trigger) -->
+        <div id="detail-trigger-box" class="hidden bg-slate-900/90 border-l-2 border-cyber-yellow p-3 rounded text-xs font-mono text-slate-300">
+          <span class="text-cyber-yellow font-bold mr-1.5">TRIGGER:</span>
+          <span id="detail-trigger-text"></span>
+        </div>
+
+        <!-- Description Content Blocks Section -->
+        <div class="bg-slate-900/40 border border-slate-800/80 rounded-lg p-6 space-y-4 leading-relaxed text-sm text-slate-300">
+          <h3 class="font-mono text-xs font-bold text-cyber-cyan uppercase tracking-widest border-b border-slate-800 pb-2 mb-4 flex items-center gap-2">
+            <i data-lucide="file-text" class="w-4 h-4"></i> SPELL SPECIFICATIONS
+          </h3>
+          <div id="detail-description-blocks" class="space-y-3">
+            <!-- Rendered content blocks -->
+          </div>
+        </div>
+
+        <!-- Upgrades Section (Higher Levels / Cantrip Upgrade) -->
+        <div id="detail-upgrades-box" class="hidden bg-slate-900/40 border border-slate-800/80 rounded-lg p-5 space-y-2">
+          <h4 id="detail-upgrade-heading" class="font-mono text-xs font-bold text-cyber-magenta uppercase tracking-wider flex items-center gap-2">
+            <i data-lucide="trending-up" class="w-4 h-4"></i> USING A HIGHER-LEVEL SPELL SLOT
+          </h4>
+          <p id="detail-upgrade-text" class="text-sm text-slate-300 leading-relaxed font-sans"></p>
+        </div>
+
+        <!-- Creature Stat Blocks Section -->
+        <div id="detail-statblocks-container" class="space-y-6 pt-4">
+          <!-- Stat blocks inserted dynamically -->
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- ==================== PROTOCOL RULES MODAL ==================== -->
+  <div id="rules-modal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 w-full max-w-3xl max-h-[85vh] rounded-xl flex flex-col shadow-2xl overflow-hidden cyber-border">
+      
+      <!-- Modal Header -->
+      <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-950">
+        <h3 class="font-mono font-bold text-cyber-cyan flex items-center gap-2">
+          <i data-lucide="book" class="w-4 h-4"></i> COMPENDIUM PROTOCOLS & RULES
+        </h3>
+        <button id="btn-close-rules" class="text-slate-400 hover:text-white p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Modal Content Body -->
+      <div id="rules-modal-body" class="p-6 overflow-y-auto space-y-6 text-sm text-slate-300">
+        <!-- Rules blocks parsed here -->
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-3 bg-slate-950 border-t border-slate-800 text-right font-mono text-xs text-slate-500">
+        PRESS [ESC] TO CLOSE
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Message -->
+  <div id="toast-message" class="fixed bottom-6 right-6 bg-slate-900 border border-cyber-cyan text-slate-100 text-xs font-mono px-4 py-2.5 rounded shadow-lg transition-opacity opacity-0 pointer-events-none flex items-center gap-2 z-50">
+    <i data-lucide="info" class="w-4 h-4 text-cyber-cyan"></i>
+    <span id="toast-text">Message</span>
+  </div>
+
+
+  <!-- ==================== LOGIC & SCRIPTS ==================== -->
+  <script>
+    // --- SAMPLE DATABASE FALLBACK ---
+    const SAMPLE_DATABASE = {
+      meta: {
+        title: "Neon Odyssey Spell Matrix",
+        sourceFile: "neon_odyssey_spells.json",
+        spellCount: 2,
+        levels: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+        schools: ["Abjuration", "Conjuration", "Divination", "Enchantment", "Evocation", "Illusion", "Necromancy", "Transmutation"],
+        classes: ["Cryptist", "Enforcer", "Esper", "Gridrunner", "Icon", "Machinist", "Oracle", "Primalist", "Tracer"]
+      },
+      rules: [
+        {
+          id: "matrix-protocols",
+          title: "Matrix Spellcasting Protocols",
+          content: [
+            { type: "paragraph", text: "Spells in *Neon Odyssey* represent digital, esoteric, or biological hack scripts executed via neuro-implants or environmental catalysts." },
+            { type: "list", items: [
+              { label: "Hardware Memory", text: "Spells marked as **Stocked** represent active memory allocations ready for execution.", items: [] }
+            ]}
+          ]
+        }
+      ],
+      spells: [
+        {
+          id: "accelerate-fall",
+          name: "Accelerate Fall",
+          level: 1,
+          levelLabel: "Level 1",
+          school: "Transmutation",
+          isCantrip: false,
+          classes: ["Esper", "Gridrunner", "Machinist"],
+          castingTime: "Reaction, which you take when you or a creature you can see within 60 feet of you falls",
+          castingTimeType: "Reaction",
+          castingTrigger: "when you or a creature you can see within 60 feet of you falls",
+          ritual: false,
+          range: "60 feet",
+          components: { raw: "V, S", verbal: true, somatic: true, material: false, materialDescription: null, materialCost: null, materialConsumed: false },
+          duration: "1 minute",
+          concentration: false,
+          description: [
+            { type: "paragraph", text: "Choose up to five falling creatures within range. A target's rate of descent doubles until the spell ends." }
+          ],
+          higherLevels: "If you cast this spell using a level 5+ spell slot, its range increases to 20 miles.",
+          cantripUpgrade: null,
+          statBlocks: []
+        },
+        {
+          id: "summon-assistant",
+          name: "Summon Assistant",
+          level: 2,
+          levelLabel: "Level 2",
+          school: "Conjuration",
+          isCantrip: false,
+          classes: ["Cryptist", "Machinist"],
+          castingTime: "1 Action",
+          castingTimeType: "Action",
+          castingTrigger: null,
+          ritual: true,
+          range: "30 feet",
+          components: { raw: "V, S, M (a microchip worth 50+ cr)", verbal: true, somatic: true, material: true, materialDescription: "a microchip worth 50+ cr", materialCost: "50+ cr", materialConsumed: false },
+          duration: "1 hour",
+          concentration: true,
+          description: [
+            { type: "paragraph", text: "You manifest an autonomous digital drone construct near you." }
+          ],
+          higherLevels: "When cast using a level 3+ slot, the construct gains +10 HP per level above 2nd.",
+          cantripUpgrade: null,
+          statBlocks: [
+            {
+              name: "Autonomous Assistant",
+              size: "Tiny",
+              type: "Construct",
+              alignment: "Neutral",
+              armorClass: "12",
+              hitPoints: "2 (1d4)",
+              speed: "20 ft., Fly 30 ft.",
+              abilityScores: {
+                STR: { score: 4, modifier: -3 },
+                DEX: { score: 14, modifier: 2 },
+                CON: { score: 10, modifier: 0 },
+                INT: { score: 8, modifier: -1 },
+                WIS: { score: 12, modifier: 1 },
+                CHA: { score: 6, modifier: -2 }
+              },
+              resistances: null,
+              immunities: "Poison; Exhaustion, Poisoned",
+              senses: "Darkvision 60 ft., Passive Perception 11",
+              languages: "Telepathy 100 ft. (works only with you)",
+              challenge: "None (XP 0; PB equals your Proficiency Bonus)",
+              traits: [
+                { name: "Limited Playback", text: "The assistant can store up to 10 short audio phrases." }
+              ],
+              actions: [
+                { name: "Action", text: "The assistant takes an action other than the Attack action." }
+              ],
+              bonusActions: [],
+              reactions: [
+                { name: "Channel Magic", text: "*Trigger:* You cast a spell with range of touch... *Response:* Drone delivers it." }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+
+    // --- PREFERENCE MANAGER (PERSISTENT STORAGE BY SPELL ID) ---
+    const SpellPrefs = {
+      // Get preferences for a specific spell ID
+      get(spellId) {
+        try {
+          const stored = localStorage.getItem(`neon_odyssey_pref_${spellId}`);
+          return stored ? JSON.parse(stored) : { stocked: false, notes: "" };
+        } catch (e) {
+          console.error("Failed to load preference from localStorage", e);
+          return { stocked: false, notes: "" };
+        }
+      },
+
+      // Save preferences for a specific spell ID
+      set(spellId, newPrefs) {
+        try {
+          const current = this.get(spellId);
+          const updated = { ...current, ...newPrefs };
+          localStorage.setItem(`neon_odyssey_pref_${spellId}`, JSON.stringify(updated));
+          return updated;
+        } catch (e) {
+          console.error("Failed to save preference to localStorage", e);
+        }
+      },
+
+      // Check if a spell is stocked
+      isStocked(spellId) {
+        return this.get(spellId).stocked;
+      },
+
+      // Toggle stocked status and return the new boolean state
+      toggleStocked(spellId) {
+        const current = this.get(spellId);
+        const newState = !current.stocked;
+        this.set(spellId, { stocked: newState });
+        return newState;
+      },
+
+      // Count total stocked spells across the browser's storage
+      getTotalStockedCount(allSpells) {
+        if (!allSpells) return 0;
+        return allSpells.filter(spell => this.isStocked(spell.id)).length;
+      }
+    };
+
+    // Global Application State Variables
+    let appData = null;
+    let selectedSpellId = null;
+
+    let filterState = {
+      search: '',
+      levels: new Set(),
+      schools: new Set(),
+      classes: new Set(),
+      castingTimeType: '',
+      concentration: false,
+      ritual: false,
+      stockedOnly: false,
+      sort: 'alpha'
+    };
+
+    // --- MARKDOWN FORMATTING & TEXT UTILITIES ---
+    function formatMarkdown(text) {
+      if (!text) return '';
+      return text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast-message');
+      const text = document.getElementById('toast-text');
+      text.innerText = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2500);
+    }
+
+    // Standalone UI toggle handler function
+    function toggleStockSpell(id) {
+      const isNowStocked = SpellPrefs.toggleStocked(id);
+
+      if (isNowStocked) {
+        showToast('Spell stocked in active memory');
+      } else {
+        showToast('Spell removed from stocked memory');
+      }
+
+      const countPill = document.getElementById('stocked-count-pill');
+      if (countPill && appData) {
+        countPill.innerText = SpellPrefs.getTotalStockedCount(appData.spells);
+      }
+
+      renderSpellList();
+      renderSpellDetail();
+    }
+
+    // --- CONTENT BLOCK RENDERER ---
+    function renderContentBlock(block) {
+      if (!block) return '';
+      if (block.type === 'paragraph') {
+        return `<p class="leading-relaxed text-slate-300 font-sans mb-3">${formatMarkdown(block.text)}</p>`;
+      } else if (block.type === 'list') {
+        return `<ul class="space-y-2 my-3 pl-4 list-disc text-slate-300 font-sans">${(block.items || []).map(item => renderListItem(item)).join('')}</ul>`;
+      } else if (block.type === 'table') {
+        const headersHtml = (block.headers || []).map(h => `<th class="px-3 py-2 text-left font-mono text-xs uppercase bg-slate-900 border border-slate-800 text-cyber-cyan">${formatMarkdown(h)}</th>`).join('');
+        const rowsHtml = (block.rows || []).map(row => `
+          <tr class="hover:bg-slate-900/60 border-b border-slate-800/60">
+            ${row.map(cell => `<td class="px-3 py-2 text-xs font-mono border-r border-slate-800/40 text-slate-300">${formatMarkdown(cell)}</td>`).join('')}
+          </tr>
+        `).join('');
+        return `
+          <div class="overflow-x-auto my-4 border border-slate-800 rounded">
+            <table class="w-full text-left border-collapse">
+              <thead><tr>${headersHtml}</tr></thead>
+              <tbody>${rowsHtml}</tbody>
+            </table>
+          </div>
+        `;
+      }
+      return '';
+    }
+
+    function renderListItem(item) {
+      if (!item) return '';
+      let html = `<li class="space-y-1">`;
+      if (item.label) {
+        html += `<strong class="text-cyber-cyan font-mono text-xs">${formatMarkdown(item.label)}: </strong>`;
+      }
+      html += `<span>${formatMarkdown(item.text)}</span>`;
+      if (item.items && item.items.length > 0) {
+        html += `<ul class="pl-4 mt-1.5 space-y-1 list-circle">${item.items.map(sub => renderListItem(sub)).join('')}</ul>`;
+      }
+      html += `</li>`;
+      return html;
+    }
+
+    // --- STAT BLOCK RENDERER ---
+    function renderStatBlock(sb) {
+      if (!sb) return '';
+      
+      const abilityKeys = ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA'];
+      const abilityHeaders = abilityKeys.map(k => `<th class="p-2 border border-slate-800 font-mono text-[11px] text-cyber-cyan bg-slate-950">${k}</th>`).join('');
+      const abilityCells = abilityKeys.map(k => {
+        const item = sb.abilityScores ? sb.abilityScores[k] : { score: 10, modifier: 0 };
+        const mod = item.modifier >= 0 ? `+${item.modifier}` : `${item.modifier}`;
+        return `
+          <td class="p-2 border border-slate-800 text-center font-mono">
+            <div class="font-bold text-slate-100 text-xs">${item.score}</div>
+            <div class="text-[10px] text-cyber-magenta">${mod}</div>
+          </td>
+        `;
+      }).join('');
+
+      const renderNamedList = (title, items, color = 'text-cyber-cyan') => {
+        if (!items || items.length === 0) return '';
+        return `
+          <div class="space-y-2 border-t border-slate-800 pt-3 mt-3">
+            <h5 class="font-mono text-xs font-bold uppercase tracking-wider ${color}">${title}</h5>
+            ${items.map(it => `
+              <div class="text-xs font-sans text-slate-300">
+                <strong class="font-mono text-slate-100">${formatMarkdown(it.name)}.</strong> ${formatMarkdown(it.text)}
+              </div>
+            `).join('')}
+          </div>
+        `;
+      };
+
+      return `
+        <div class="bg-slate-900/90 border border-cyber-cyan/40 rounded-lg p-5 space-y-3 cyber-border text-xs font-sans my-4">
+          <div class="border-b border-slate-800 pb-2">
+            <h4 class="font-mono font-bold text-lg text-cyber-cyan">${sb.name}</h4>
+            <p class="font-mono text-[11px] text-slate-400 italic">${sb.size} ${sb.type}, ${sb.alignment}</p>
+          </div>
+
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-2 font-mono text-[11px]">
+            <div><span class="text-slate-500">ARMOR CLASS:</span> <span class="text-slate-200 font-bold">${sb.armorClass}</span></div>
+            <div><span class="text-slate-500">HIT POINTS:</span> <span class="text-slate-200 font-bold">${sb.hitPoints}</span></div>
+            <div class="col-span-2"><span class="text-slate-500">SPEED:</span> <span class="text-slate-200 font-bold">${sb.speed}</span></div>
+          </div>
+
+          <div class="overflow-x-auto my-3">
+            <table class="w-full border-collapse">
+              <thead><tr>${abilityHeaders}</tr></thead>
+              <tbody><tr>${abilityCells}</tr></tbody>
+            </table>
+          </div>
+
+          <div class="space-y-1 font-mono text-[11px] text-slate-300">
+            ${sb.resistances ? `<div><span class="text-slate-500">DAMAGE RESISTANCES:</span> ${sb.resistances}</div>` : ''}
+            ${sb.immunities ? `<div><span class="text-slate-500">DAMAGE IMMUNITIES:</span> ${sb.immunities}</div>` : ''}
+            <div><span class="text-slate-500">SENSES:</span> ${sb.senses}</div>
+            <div><span class="text-slate-500">LANGUAGES:</span> ${sb.languages}</div>
+            <div><span class="text-slate-500">CHALLENGE:</span> ${sb.challenge}</div>
+          </div>
+
+          ${renderNamedList('Traits', sb.traits, 'text-cyber-cyan')}
+          ${renderNamedList('Actions', sb.actions, 'text-cyber-green')}
+          ${renderNamedList('Bonus Actions', sb.bonusActions, 'text-cyber-yellow')}
+          ${renderNamedList('Reactions', sb.reactions, 'text-cyber-magenta')}
+        </div>
+      `;
+    }
+
+    // --- INITIALIZATION AND FILTER CONTROL BUILDERS ---
+    function initDatabase(data) {
+      appData = data;
+      document.getElementById('header-subtitle').innerText = `${data.meta ? data.meta.title : 'COMPENDIUM DATABASE'} // ACTIVE`;
+      
+      // Update stocked badge count using the preference manager
+      const countPill = document.getElementById('stocked-count-pill');
+      if (countPill) {
+        countPill.innerText = SpellPrefs.getTotalStockedCount(appData.spells);
+      }
+
+      buildFilterControls();
+
+      // Check URL hash anchor
+      const hash = window.location.hash.replace('#', '');
+      if (hash && appData.spells.some(s => s.id === hash)) {
+        selectedSpellId = hash;
+      } else if (appData.spells.length > 0) {
+        selectedSpellId = appData.spells[0].id;
+      }
+
+      renderRulesModal();
+      renderSpellList();
+      renderSpellDetail();
+      showToast('Compendium database loaded');
+    }
+
+    function buildFilterControls() {
+      if (!appData || !appData.meta) return;
+
+      // Filter Pill helper generator
+      const makePills = (containerId, items, activeSet, toggleFn) => {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = '';
+        items.forEach(item => {
+          const isActive = activeSet.has(item);
+          const pill = document.createElement('button');
+          pill.className = `px-2 py-0.5 rounded text-[11px] font-mono transition border ${
+            isActive 
+              ? 'bg-cyber-cyan text-slate-950 font-bold border-cyber-cyan' 
+              : 'bg-slate-950 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-white'
+          }`;
+          pill.innerText = typeof item === 'number' ? (item === 0 ? 'Cantrip' : `Lvl ${item}`) : item;
+          pill.onclick = () => toggleFn(item);
+          container.appendChild(pill);
+        });
+      };
+
+      makePills('filter-level-pills', appData.meta.levels || [0,1,2,3,4,5,6,7,8], filterState.levels, (lvl) => {
+        if (filterState.levels.has(lvl)) filterState.levels.delete(lvl); else filterState.levels.add(lvl);
+        buildFilterControls(); renderSpellList();
+      });
+
+      makePills('filter-class-pills', appData.meta.classes || [], filterState.classes, (cls) => {
+        if (filterState.classes.has(cls)) filterState.classes.delete(cls); else filterState.classes.add(cls);
+        buildFilterControls(); renderSpellList();
+      });
+
+      makePills('filter-school-pills', appData.meta.schools || [], filterState.schools, (sch) => {
+        if (filterState.schools.has(sch)) filterState.schools.delete(sch); else filterState.schools.add(sch);
+        buildFilterControls(); renderSpellList();
+      });
+
+      // Calculate Active Filter Count Badge
+      let count = filterState.levels.size + filterState.schools.size + filterState.classes.size;
+      if (filterState.castingTimeType) count++;
+      if (filterState.concentration) count++;
+      if (filterState.ritual) count++;
+      if (filterState.search) count++;
+
+      const countPill = document.getElementById('filter-active-count');
+      if (count > 0) {
+        countPill.innerText = count;
+        countPill.classList.remove('hidden');
+      } else {
+        countPill.classList.add('hidden');
+      }
+    }
+
+    // --- FILTER & SORT LOGIC ---
+    function getFilteredSpells() {
+      if (!appData || !appData.spells) return [];
+
+      let list = appData.spells.filter(spell => {
+        if (filterState.stockedOnly && !SpellPrefs.isStocked(spell.id)) return false;
+
+        if (filterState.search) {
+          const q = filterState.search.toLowerCase();
+          const matchName = spell.name.toLowerCase().includes(q);
+          const matchSchool = spell.school.toLowerCase().includes(q);
+          const matchClass = spell.classes && spell.classes.some(c => c.toLowerCase().includes(q));
+          const matchDesc = spell.description && spell.description.some(b => b.text && b.text.toLowerCase().includes(q));
+          if (!matchName && !matchSchool && !matchClass && !matchDesc) return false;
+        }
+
+        if (filterState.levels.size > 0 && !filterState.levels.has(spell.level)) return false;
+        if (filterState.schools.size > 0 && !filterState.schools.has(spell.school)) return false;
+        if (filterState.classes.size > 0 && !(spell.classes && spell.classes.some(c => filterState.classes.has(c)))) return false;
+        if (filterState.castingTimeType && spell.castingTimeType !== filterState.castingTimeType) return false;
+        if (filterState.concentration && !spell.concentration) return false;
+        if (filterState.ritual && !spell.ritual) return false;
+
+        return true;
+      });
+
+      // Sorting
+      return list.sort((a, b) => {
+        if (filterState.sort === 'level-asc') return a.level - b.level || a.name.localeCompare(b.name);
+        if (filterState.sort === 'level-desc') return b.level - a.level || a.name.localeCompare(b.name);
+        if (filterState.sort === 'school') return a.school.localeCompare(b.school) || a.name.localeCompare(b.name);
+        return a.name.localeCompare(b.name);
+      });
+    }
+
+    // --- MOBILE SIDEBAR DRAWER CONTROLS ---
+
+    // --- MOBILE SIDEBAR DRAWER CONTROLS ---
+    function openMobileSidebar() {
+      const sidebar = document.getElementById('sidebar-panel');
+      const backdrop = document.getElementById('sidebar-backdrop');
+      sidebar.classList.remove('-translate-x-full');
+      backdrop.classList.remove('hidden');
+    }
+
+    function closeMobileSidebar() {
+      const sidebar = document.getElementById('sidebar-panel');
+      const backdrop = document.getElementById('sidebar-backdrop');
+      sidebar.classList.add('-translate-x-full');
+      backdrop.classList.add('hidden');
+    }
+
+    document.getElementById('btn-toggle-mobile-sidebar').addEventListener('click', openMobileSidebar);
+    document.getElementById('btn-mobile-open-selector').addEventListener('click', openMobileSidebar);
+    document.getElementById('btn-close-mobile-sidebar').addEventListener('click', closeMobileSidebar);
+    document.getElementById('sidebar-backdrop').addEventListener('click', closeMobileSidebar);
+
+    // --- RENDER SPELL LIST (LEFT PANEL) ---
+    function renderSpellList() {
+      const container = document.getElementById('spell-list-container');
+      
+      // 1. Save the current scroll position before redrawing
+      const savedScrollTop = container.scrollTop;
+
+      const filtered = getFilteredSpells();
+
+      document.getElementById('spell-count-summary').innerText = `${filtered.length} / ${appData ? appData.spells.length : 0} SPELLS`;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="p-8 text-center text-slate-500 font-mono text-xs">
+            <i data-lucide="search-x" class="w-8 h-8 mx-auto mb-2 text-slate-600"></i>
+            <p>NO MATCHING SPELLS FOUND</p>
+            <button onclick="resetAllFilters()" class="mt-2 text-cyber-cyan underline hover:text-white">Reset Filters</button>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      container.innerHTML = '';
+      filtered.forEach(spell => {
+        const isSelected = spell.id === selectedSpellId;
+        const isStocked = SpellPrefs.isStocked(spell.id);
+
+        const card = document.createElement('div');
+        card.id = `spell-item-${spell.id}`;
+        card.className = `p-2.5 sm:p-3 rounded cursor-pointer transition border font-mono text-xs flex items-stretch justify-between gap-2 ${
+          isSelected 
+            ? 'bg-cyber-cyan/10 border-cyber-cyan text-white shadow-[0_0_10px_rgba(0,243,255,0.15)]' 
+            : 'bg-slate-900/40 border-slate-800/80 hover:bg-slate-800/60 hover:border-slate-700 text-slate-300'
+        }`;
+
+        card.onclick = () => {
+          selectedSpellId = spell.id;
+          window.location.hash = spell.id;
+          renderSpellList();
+          renderSpellDetail();
+          closeMobileSidebar();
+        };
+
+        const classesBadges = (spell.classes || []).slice(0, 3).map(c => `<span class="text-[9px] px-1 py-0.2 rounded bg-slate-800 text-slate-400 border border-slate-700 shrink-0">${c}</span>`).join(' ');
+
+        card.innerHTML = `
+          <div class="flex-1 min-w-0 pr-1 flex flex-col justify-between">
+            <div class="flex items-center gap-1.5 mb-1 flex-wrap">
+              <span class="text-[10px] font-bold px-1.5 py-0.2 rounded shrink-0 ${spell.isCantrip ? 'bg-slate-800 text-cyber-yellow border border-cyber-yellow/30' : 'bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/30'}">
+                ${spell.levelLabel || (spell.level === 0 ? 'Cantrip' : 'Lvl ' + spell.level)}
+              </span>
+              <span class="text-slate-400 text-[10px] truncate uppercase">${spell.school}</span>
+              ${spell.concentration ? '<span class="text-[9px] text-cyber-magenta font-bold shrink-0" title="Concentration">C</span>' : ''}
+              ${spell.ritual ? '<span class="text-[9px] text-cyber-green font-bold shrink-0" title="Ritual">R</span>' : ''}
+            </div>
+            <div class="font-bold text-sm text-slate-100 truncate leading-snug">${spell.name}</div>
+            <div class="flex items-center gap-1.5 mt-1.5 overflow-hidden">
+              ${classesBadges}
+              ${spell.classes && spell.classes.length > 3 ? `<span class="text-[9px] text-slate-500 shrink-0">+${spell.classes.length - 3}</span>` : ''}
+            </div>
+          </div>
+
+          <div class="flex items-center shrink-0 pl-1 border-l border-slate-800/60">
+            <button title="${isStocked ? 'Unstock Spell' : 'Stock Spell'}" onclick="event.stopPropagation(); toggleStockSpell('${spell.id}');" class="p-2 rounded hover:bg-slate-800 transition ${isStocked ? 'text-cyber-yellow bg-cyber-yellow/10' : 'text-slate-500 hover:text-slate-300'}">
+              <i data-lucide="bookmark" class="w-4 h-4 ${isStocked ? 'fill-cyber-yellow' : ''}"></i>
+            </button>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+
+      lucide.createIcons();
+
+      // 2. Restore the saved scroll position so the list doesn't jump
+      container.scrollTop = savedScrollTop;
+    }
+
+    // --- RENDER SPELL DETAIL (MAIN PANEL) ---
+    function renderSpellDetail() {
+      const emptyView = document.getElementById('empty-detail-view');
+      const detailContent = document.getElementById('spell-detail-content');
+
+      if (!appData || !selectedSpellId) {
+        emptyView.classList.remove('hidden');
+        detailContent.classList.add('hidden');
+        return;
+      }
+
+      const spell = appData.spells.find(s => s.id === selectedSpellId);
+      if (!spell) {
+        emptyView.classList.remove('hidden');
+        detailContent.classList.add('hidden');
+        return;
+      }
+
+      emptyView.classList.add('hidden');
+      detailContent.classList.remove('hidden');
+
+      // Mobile active spell header button label update
+      const mobileNameLabel = document.getElementById('mobile-selected-spell-name');
+      if (mobileNameLabel) mobileNameLabel.innerText = spell.name;
+
+      // 1. Header Info
+      document.getElementById('detail-name').innerText = spell.name;
+      document.getElementById('detail-level-badge').innerText = spell.levelLabel || (spell.level === 0 ? 'Cantrip' : `Level ${spell.level}`);
+      document.getElementById('detail-school').innerText = spell.school;
+
+      // Classes
+      const classesContainer = document.getElementById('detail-classes');
+      classesContainer.innerHTML = (spell.classes || []).map(c => 
+        `<span class="px-2 py-0.5 bg-slate-800 text-slate-200 border border-slate-700 rounded text-xs font-mono">${c}</span>`
+      ).join(' ');
+
+      // Stock button state
+      const isStocked = SpellPrefs.isStocked(spell.id);
+      const stockBtn = document.getElementById('detail-btn-stock');
+      const stockText = document.getElementById('detail-stock-text');
+      if (isStocked) {
+        stockBtn.className = "px-3 py-1.5 rounded font-mono text-xs border bg-cyber-yellow/20 text-cyber-yellow border-cyber-yellow/50 hover:bg-cyber-yellow/30 flex items-center gap-1.5 transition";
+        stockText.innerText = "STOCKED";
+      } else {
+        stockBtn.className = "px-3 py-1.5 rounded font-mono text-xs border bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700 flex items-center gap-1.5 transition";
+        stockText.innerText = "STOCK SPELL";
+      }
+      stockBtn.onclick = () => toggleStockSpell(spell.id);
+
+      // Copy Link Button
+      document.getElementById('detail-btn-copy').onclick = () => {
+        const url = `${window.location.origin}${window.location.pathname}#${spell.id}`;
+        navigator.clipboard.writeText(url).then(() => {
+          showToast('Permalink copied to clipboard');
+        }).catch(() => {
+          // Fallback
+          const input = document.createElement('input');
+          input.value = url;
+          document.body.appendChild(input);
+          input.select();
+          document.execCommand('copy');
+          document.body.removeChild(input);
+          showToast('Permalink copied to clipboard');
+        });
+      };
+
+      // 2. Key Metrics Bar
+      document.getElementById('detail-casting-time').innerText = spell.castingTime || '1 Action';
+      document.getElementById('detail-range').innerText = spell.range || 'Self';
+      
+      // Components
+      let compText = spell.components ? spell.components.raw : 'V, S';
+      document.getElementById('detail-components').innerText = compText;
+
+      // Duration & Badges
+      let durationHtml = `<span>${spell.duration || 'Instantaneous'}</span>`;
+      if (spell.concentration) {
+        durationHtml += `<span class="px-1.5 py-0.2 rounded bg-cyber-magenta/20 text-cyber-magenta border border-cyber-magenta/40 text-[10px] font-bold">CONCENTRATION</span>`;
+      }
+      if (spell.ritual) {
+        durationHtml += `<span class="px-1.5 py-0.2 rounded bg-cyber-green/20 text-cyber-green border border-cyber-green/40 text-[10px] font-bold">RITUAL</span>`;
+      }
+      document.getElementById('detail-duration').innerHTML = durationHtml;
+
+      // Trigger note box
+      const triggerBox = document.getElementById('detail-trigger-box');
+      if (spell.castingTrigger) {
+        triggerBox.classList.remove('hidden');
+        document.getElementById('detail-trigger-text').innerText = spell.castingTrigger;
+      } else {
+        triggerBox.classList.add('hidden');
+      }
+
+      // 3. Description Content Blocks
+      const descBlocksContainer = document.getElementById('detail-description-blocks');
+      descBlocksContainer.innerHTML = '';
+      if (spell.description && Array.isArray(spell.description)) {
+        spell.description.forEach(block => {
+          descBlocksContainer.innerHTML += renderContentBlock(block);
+        });
+      }
+
+      // 4. Higher Levels / Cantrip Upgrade Section
+      const upgradesBox = document.getElementById('detail-upgrades-box');
+      const upgradeHeading = document.getElementById('detail-upgrade-heading');
+      const upgradeText = document.getElementById('detail-upgrade-text');
+
+      if (spell.higherLevels) {
+        upgradesBox.classList.remove('hidden');
+        upgradeHeading.innerHTML = `<i data-lucide="trending-up" class="w-4 h-4"></i> USING A HIGHER-LEVEL SPELL SLOT`;
+        upgradeText.innerText = spell.higherLevels;
+      } else if (spell.cantripUpgrade) {
+        upgradesBox.classList.remove('hidden');
+        upgradeHeading.innerHTML = `<i data-lucide="zap" class="w-4 h-4"></i> CANTRIP UPGRADE`;
+        upgradeText.innerText = spell.cantripUpgrade;
+      } else {
+        upgradesBox.classList.add('hidden');
+      }
+
+      // 5. Creature Stat Blocks
+      const statBlocksContainer = document.getElementById('detail-statblocks-container');
+      statBlocksContainer.innerHTML = '';
+      if (spell.statBlocks && spell.statBlocks.length > 0) {
+        spell.statBlocks.forEach(sb => {
+          statBlocksContainer.innerHTML += renderStatBlock(sb);
+        });
+      }
+
+      // Refresh icons
+      lucide.createIcons();
+
+      // Scroll detail main container to top
+      document.getElementById('detail-main-container').scrollTop = 0;
+    }
+
+    // --- PROTOCOL RULES MODAL RENDER ---
+    function renderRulesModal() {
+      const container = document.getElementById('rules-modal-body');
+      container.innerHTML = '';
+
+      if (!appData || !appData.rules) return;
+
+      appData.rules.forEach(rule => {
+        let section = document.createElement('div');
+        section.className = "space-y-3 border-b border-slate-800 pb-4 last:border-b-0";
+        section.innerHTML = `<h4 class="font-mono font-bold text-base text-cyber-cyan flex items-center gap-2">
+          <span class="text-cyber-magenta">//</span> ${rule.title}
+        </h4>`;
+
+        if (rule.content && Array.isArray(rule.content)) {
+          rule.content.forEach(block => {
+            section.innerHTML += renderContentBlock(block);
+          });
+        }
+        container.appendChild(section);
+      });
+    }
+
+    // --- EVENT LISTENERS & SETUP ---
+    function resetAllFilters() {
+      filterState.search = '';
+      filterState.levels.clear();
+      filterState.schools.clear();
+      filterState.classes.clear();
+      filterState.castingTimeType = '';
+      filterState.concentration = false;
+      filterState.ritual = false;
+      filterState.stockedOnly = false;
+      filterState.sort = 'alpha';
+
+      document.getElementById('filter-search').value = '';
+      document.getElementById('filter-casting-type').value = '';
+      document.getElementById('filter-concentration').checked = false;
+      document.getElementById('filter-ritual').checked = false;
+      document.getElementById('sort-order').value = 'alpha';
+
+      const btnStocked = document.getElementById('btn-toggle-stocked');
+      btnStocked.className = "px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-400 border border-slate-700 flex items-center gap-1.5 transition";
+
+      buildFilterControls();
+      renderSpellList();
+    }
+
+    // Search input handler
+    document.getElementById('filter-search').addEventListener('input', (e) => {
+      filterState.search = e.target.value.trim();
+      document.getElementById('btn-clear-search').classList.toggle('hidden', !filterState.search);
+      buildFilterControls();
+      renderSpellList();
+    });
+
+    document.getElementById('btn-clear-search').addEventListener('click', () => {
+      filterState.search = '';
+      document.getElementById('filter-search').value = '';
+      document.getElementById('btn-clear-search').classList.add('hidden');
+      buildFilterControls();
+      renderSpellList();
+    });
+
+    // Drawer Toggles
+    document.getElementById('btn-toggle-filters').addEventListener('click', () => {
+      const drawer = document.getElementById('filter-drawer');
+      drawer.classList.toggle('hidden');
+    });
+
+    // Stocked Only Toggle
+    document.getElementById('btn-toggle-stocked').addEventListener('click', function() {
+      filterState.stockedOnly = !filterState.stockedOnly;
+      if (filterState.stockedOnly) {
+        this.className = "px-2.5 py-1 rounded bg-cyber-yellow/20 text-cyber-yellow border border-cyber-yellow/50 flex items-center gap-1.5 transition";
+      } else {
+        this.className = "px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-400 border border-slate-700 flex items-center gap-1.5 transition";
+      }
+      renderSpellList();
+    });
+
+    // Reset Sub-buttons
+    document.getElementById('btn-reset-levels').onclick = () => { filterState.levels.clear(); buildFilterControls(); renderSpellList(); };
+    document.getElementById('btn-reset-classes').onclick = () => { filterState.classes.clear(); buildFilterControls(); renderSpellList(); };
+    document.getElementById('btn-reset-schools').onclick = () => { filterState.schools.clear(); buildFilterControls(); renderSpellList(); };
+    document.getElementById('btn-reset-all-filters').onclick = resetAllFilters;
+
+    document.getElementById('filter-casting-type').addEventListener('change', (e) => {
+      filterState.castingTimeType = e.target.value;
+      buildFilterControls();
+      renderSpellList();
+    });
+
+    document.getElementById('sort-order').addEventListener('change', (e) => {
+      filterState.sort = e.target.value;
+      renderSpellList();
+    });
+
+    document.getElementById('filter-concentration').addEventListener('change', (e) => {
+      filterState.concentration = e.target.checked;
+      buildFilterControls();
+      renderSpellList();
+    });
+
+    document.getElementById('filter-ritual').addEventListener('change', (e) => {
+      filterState.ritual = e.target.checked;
+      buildFilterControls();
+      renderSpellList();
+    });
+
+    // Rules Modal Open/Close
+    const rulesModal = document.getElementById('rules-modal');
+    document.getElementById('btn-open-rules').onclick = () => rulesModal.classList.remove('hidden');
+    document.getElementById('btn-close-rules').onclick = () => rulesModal.classList.add('hidden');
+
+    // JSON File Upload
+    document.getElementById('json-file-input').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        try {
+          const parsed = JSON.parse(evt.target.result);
+          if (!parsed.spells) {
+            alert("Invalid JSON format: missing 'spells' array.");
+            return;
+          }
+          initDatabase(parsed);
+        } catch (err) {
+          alert("Error parsing JSON file: " + err.message);
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    // Load Demo Data Button
+    document.getElementById('btn-load-demo').onclick = () => {
+      initDatabase(SAMPLE_DATABASE);
+    };
+
+    // Drag and Drop Zone
+    const dropZone = document.getElementById('drop-zone');
+    window.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('hidden');
+    });
+
+    dropZone.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      if (e.relatedTarget === null) dropZone.classList.add('hidden');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('hidden');
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        const file = e.dataTransfer.files[0];
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          try {
+            const parsed = JSON.parse(evt.target.result);
+            initDatabase(parsed);
+          } catch (err) {
+            alert("Error parsing JSON file: " + err.message);
+          }
+        };
+        reader.readAsText(file);
+      }
+    });
+
+    // Keyboard Shortcuts (Arrow keys & Escape)
+    window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') {
+        if (e.key === 'Escape') {
+          e.target.blur();
+        }
+        return;
+      }
+
+      if (e.key === 'Escape') {
+        rulesModal.classList.add('hidden');
+      }
+
+      const filtered = getFilteredSpells();
+      if (filtered.length === 0) return;
+
+      const currentIndex = filtered.findIndex(s => s.id === selectedSpellId);
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const nextIndex = (currentIndex + 1) % filtered.length;
+        selectedSpellId = filtered[nextIndex].id;
+        window.location.hash = selectedSpellId;
+        renderSpellList();
+        renderSpellDetail();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        const prevIndex = (currentIndex - 1 + filtered.length) % filtered.length;
+        selectedSpellId = filtered[prevIndex].id;
+        window.location.hash = selectedSpellId;
+        renderSpellList();
+        renderSpellDetail();
+      }
+    });
+
+    // Hash change handler
+    window.addEventListener('hashchange', () => {
+      const hash = window.location.hash.replace('#', '');
+      if (appData && hash && appData.spells.some(s => s.id === hash)) {
+        selectedSpellId = hash;
+        renderSpellList();
+        renderSpellDetail();
+      }
+    });
+
+    // Initialize Default Sample State on First Load
+    window.onload = function() {
+      lucide.createIcons();
+      initDatabase(SAMPLE_DATABASE);
+    };
+  </script>
+</body>
+</html>
