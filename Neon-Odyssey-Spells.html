@@ -187,7 +187,7 @@
         <!-- Search Input -->
         <div class="relative">
           <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-500"></i>
-          <input type="text" id="filter-search" placeholder="Search spells, text, keywords..." 
+          <input type="text" id="filter-search" autocomplete="off" placeholder="Search spells, text, keywords..." 
             class="w-full bg-slate-950 text-slate-100 text-sm font-mono pl-9 pr-8 py-2 rounded border border-slate-800 focus:border-cyber-cyan focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition placeholder-slate-600">
           <button id="btn-clear-search" class="hidden absolute right-2.5 top-2.5 text-slate-500 hover:text-slate-300">
             <i data-lucide="x" class="w-4 h-4"></i>
@@ -256,7 +256,7 @@
           <div class="grid grid-cols-2 gap-2">
             <div>
               <label class="text-slate-400 block mb-1">CASTING TIME</label>
-              <select id="filter-casting-type" class="w-full bg-slate-950 border border-slate-800 text-slate-300 rounded p-1.5 text-xs focus:border-cyber-cyan outline-none">
+              <select id="filter-casting-type" autocomplete="off" class="w-full bg-slate-950 border border-slate-800 text-slate-300 rounded p-1.5 text-xs focus:border-cyber-cyan outline-none">
                 <option value="">ALL CASTING TIMES</option>
                 <option value="Action">Action</option>
                 <option value="Bonus Action">Bonus Action</option>
@@ -268,7 +268,7 @@
 
             <div>
               <label class="text-slate-400 block mb-1">SORT ORDER</label>
-              <select id="sort-order" class="w-full bg-slate-950 border border-slate-800 text-slate-300 rounded p-1.5 text-xs focus:border-cyber-cyan outline-none">
+              <select id="sort-order" autocomplete="off" class="w-full bg-slate-950 border border-slate-800 text-slate-300 rounded p-1.5 text-xs focus:border-cyber-cyan outline-none">
                 <option value="alpha">A - Z (Alphabetical)</option>
                 <option value="level-asc">Level (Low to High)</option>
                 <option value="level-desc">Level (High to Low)</option>
@@ -280,11 +280,11 @@
           <!-- Component Toggles -->
           <div class="flex items-center justify-between pt-1 text-slate-300">
             <label class="flex items-center gap-1.5 cursor-pointer">
-              <input type="checkbox" id="filter-concentration" class="rounded bg-slate-900 border-slate-700 text-cyber-cyan focus:ring-0">
+              <input type="checkbox" id="filter-concentration" autocomplete="off" class="rounded bg-slate-900 border-slate-700 text-cyber-cyan focus:ring-0">
               <span>Concentration</span>
             </label>
             <label class="flex items-center gap-1.5 cursor-pointer">
-              <input type="checkbox" id="filter-ritual" class="rounded bg-slate-900 border-slate-700 text-cyber-cyan focus:ring-0">
+              <input type="checkbox" id="filter-ritual" autocomplete="off" class="rounded bg-slate-900 border-slate-700 text-cyber-cyan focus:ring-0">
               <span>Ritual</span>
             </label>
             <button id="btn-reset-all-filters" class="text-cyber-magenta hover:underline text-[11px]">
@@ -815,9 +815,10 @@
         countPill.innerText = SpellPrefs.getTotalStockedCount(appData.spells);
       }
 
-      buildFilterControls();
+      // Explicitly reset all UI filters and sort states to clean defaults
+      resetAllFilters();
 
-      // Check URL hash anchor
+      // Check URL hash anchor for direct spell linking
       const hash = window.location.hash.replace('#', '');
       if (hash && appData.spells.some(s => s.id === hash)) {
         selectedSpellId = hash;
